@@ -40,6 +40,11 @@
     </select>
   </label>
 
+  <label>
+  Długość przekopu (m):
+  <input type="number" id="trenchLength" placeholder="np. 10" />
+</label>
+  
   <label id="roofTypeLabel">Rodzaj pokrycia dachu:
     <select id="roofType">
       <option value="blacha">Blacha</option>
@@ -100,6 +105,8 @@
       const turbine = document.getElementById('turbine').value;
       const fullBackup = document.getElementById('fullBackup').checked;
       const backupPrice = fullBackup ? 1500 : 0; // koszt pełnego backupu
+      const trenchLength = parseFloat(document.getElementById('trenchLength').value) || 0;
+      const trenchPrice = trenchLength * 30; // 30 zł za metr
       const discount = parseFloat(document.getElementById('margin').value) || 0;
 
       if (isNaN(bill) || isNaN(power)) {
@@ -122,15 +129,18 @@
       }
 
       const turbinePrice = turbine === "3" ? 12000 : turbine === "6" ? 24000 : 0;
-      const total = pvPrice + batteryPrice + turbinePrice + backupPrice;
+      const total = pvPrice + batteryPrice + turbinePrice + backupPrice + trenchPrice;
       const finalPrice = total + discount; // rabat dodawany
-
       document.getElementById('result').innerHTML = `
         <table>
           <tr><th colspan="2">Podsumowanie instalacji PV</th></tr>
           <tr><td>Rachunek miesięczny</td><td>${formatCurrency(bill)}</td></tr>
           <tr><td>Typ obiektu</td><td>${type}</td></tr>
           <tr><td>Montaż</td><td>${mount}${mount === 'dach' ? ', ' + roofType : ''}</td></tr>
+          <tr>
+          <td>Przekop</td>
+          <td>${trenchLength > 0 ? trenchLength + ' m' : 'Brak'}</td>
+          </tr>
           <tr><td>Wybrana moc instalacji</td><td>${power} kW</td></tr>
           <tr><td>Sugerowana moc instalacji</td><td>${suggestedPower} kW</td></tr>
           <tr><td>Magazyn energii</td><td>${battery} kWh</td></tr>
